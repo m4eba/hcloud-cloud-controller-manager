@@ -24,8 +24,8 @@ import (
 
 	"k8s.io/klog/v2"
 
+	"github.com/hetznercloud/hcloud-cloud-controller-manager/internal/metrics"
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/syself/hetzner-cloud-controller-manager/internal/metrics"
 	hrobot "github.com/syself/hrobot-go"
 	"github.com/syself/hrobot-go/models"
 	cloudprovider "k8s.io/cloud-provider"

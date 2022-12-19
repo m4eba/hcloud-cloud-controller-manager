@@ -23,8 +23,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hetznercloud/hcloud-cloud-controller-manager/internal/metrics"
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/syself/hetzner-cloud-controller-manager/internal/metrics"
 	hrobot "github.com/syself/hrobot-go"
 	"github.com/syself/hrobot-go/models"
 	v1 "k8s.io/api/core/v1"

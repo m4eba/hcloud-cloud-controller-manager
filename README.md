@@ -1,6 +1,6 @@
 # Kubernetes Cloud Controller Manager for Hetzner Cloud
 
-[![GitHub Actions status](https://github.com/syself/hetzner-cloud-controller-manager/workflows/Run%20tests/badge.svg)](https://github.com/syself/hetzner-cloud-controller-manager/actions)
+[![GitHub Actions status](https://github.com/hetznercloud/hcloud-cloud-controller-manager/workflows/Run%20tests/badge.svg)](https://github.com/hetznercloud/hcloud-cloud-controller-manager/actions)
 
 The Hetzner Cloud cloud controller manager integrates your Kubernets
 cluster with the Hetzner Cloud API. Read more about kubernetes cloud
@@ -9,16 +9,16 @@ documentation](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud
 
 ## Features
 
-* **instances interface**: adds the server type to the
+- **instances interface**: adds the server type to the
   `beta.kubernetes.io/instance-type` label, sets the external ipv4 and
   ipv6 addresses and deletes nodes from Kubernetes that were deleted
   from the Hetzner Cloud.
-* **zones interface**: makes Kubernetes aware of the failure domain of
+- **zones interface**: makes Kubernetes aware of the failure domain of
   the server by setting the `failure-domain.beta.kubernetes.io/region`
   and `failure-domain.beta.kubernetes.io/zone` labels on the node.
-* **Private Networks**: allows to use Hetzner Cloud Private Networks for
+- **Private Networks**: allows to use Hetzner Cloud Private Networks for
   your pods traffic.
-* **Load Balancers**: allows to use Hetzner Cloud Load Balancers with
+- **Load Balancers**: allows to use Hetzner Cloud Load Balancers with
   Kubernetes Services
 
 ## Example
@@ -30,10 +30,10 @@ metadata:
   annotations:
     flannel.alpha.coreos.com/backend-data: '{"VtepMAC":"06:b3:ee:88:92:36"}'
     flannel.alpha.coreos.com/backend-type: vxlan
-    flannel.alpha.coreos.com/kube-subnet-manager: "true"
+    flannel.alpha.coreos.com/kube-subnet-manager: 'true'
     flannel.alpha.coreos.com/public-ip: 78.46.208.178
-    node.alpha.kubernetes.io/ttl: "0"
-    volumes.kubernetes.io/controller-managed-attach-detach: "true"
+    node.alpha.kubernetes.io/ttl: '0'
+    volumes.kubernetes.io/controller-managed-attach-detach: 'true'
   creationTimestamp: 2018-01-24T15:59:45Z
   labels:
     beta.kubernetes.io/arch: amd64
@@ -42,9 +42,9 @@ metadata:
     topology.kubernetes.io/region: fsn1 # <-- location
     topology.kubernetes.io/zone: fsn1-dc8 # <-- datacenter
     kubernetes.io/hostname: master
-    node-role.kubernetes.io/master: ""
+    node-role.kubernetes.io/master: ''
   name: master
-  resourceVersion: "183932"
+  resourceVersion: '183932'
   selfLink: /api/v1/nodes/master
   uid: 98acdedc-011f-11e8-9ed3-9600000780bf
 spec:
@@ -83,51 +83,51 @@ documentation](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm/
    accomplish this we add this systemd drop-in unit
    `/etc/systemd/system/kubelet.service.d/20-hcloud.conf`:
 
-    ```
-    [Service]
-    Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
-    ```
+   ```
+   [Service]
+   Environment="KUBELET_EXTRA_ARGS=--cloud-provider=external"
+   ```
 
    Note: the `--cloud-provider` flag is deprecated since K8S 1.19. You
    will see a log message regarding this.
 
 2. Now the cluster master can be initialized:
 
-    ```sh
-    sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-    ```
+   ```sh
+   sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+   ```
 
 3. Configure kubectl to connect to the kube-apiserver:
 
-    ```sh
-    mkdir -p $HOME/.kube
-    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    sudo chown $(id -u):$(id -g) $HOME/.kube/config
-    ```
+   ```sh
+   mkdir -p $HOME/.kube
+   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   sudo chown $(id -u):$(id -g) $HOME/.kube/config
+   ```
 
 4. Deploy the flannel CNI plugin:
 
-    ```sh
-    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
-    ```
+   ```sh
+   kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
+   ```
 
 5. Patch the flannel deployment to tolerate the `uninitialized` taint:
 
-    ```sh
-    kubectl -n kube-system patch ds kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
-    ```
+   ```sh
+   kubectl -n kube-system patch ds kube-flannel-ds --type json -p '[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.cloudprovider.kubernetes.io/uninitialized","value":"true","effect":"NoSchedule"}}]'
+   ```
 
 6. Create a secret containing your Hetzner Cloud API token.
 
-    ```sh
-    kubectl -n kube-system create secret generic hcloud --from-literal=token=<hcloud API token>
-    ```
+   ```sh
+   kubectl -n kube-system create secret generic hcloud --from-literal=token=<hcloud API token>
+   ```
 
 7. Deploy the `hetzner-cloud-controller-manager`:
 
-    ```
-    kubectl apply -f  https://github.com/syself/hetzner-cloud-controller-manager/releases/latest/download/ccm.yaml
-    ```
+   ```
+   kubectl apply -f  https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm.yaml
+   ```
 
 ## Networks support
 
@@ -167,7 +167,7 @@ secret: `kubectl -n kube-system create secret generic hcloud --from-literal=toke
 If `kube-proxy` is run in IPVS mode, the `Service` manifest needs to have the
 annotation `load-balancer.hetzner.cloud/hostname` where the FQDN resolves to the HCloud LoadBalancer IP.
 
-See https://github.com/syself/hetzner-cloud-controller-manager/issues/212
+See https://github.com/hetznercloud/hcloud-cloud-controller-manager/issues/212
 
 ## Versioning policy
 
@@ -182,16 +182,16 @@ release.
 
 ### With Networks support
 
-| Kubernetes |          k3s | Cloud Controller Manager |        Deployment File                                                                                     |
-|------------|-------------:|-------------------------:|-----------------------------------------------------------------------------------------------------------:|
+| Kubernetes |          k3s | Cloud Controller Manager |                                                                                            Deployment File |
+| ---------- | -----------: | -----------------------: | ---------------------------------------------------------------------------------------------------------: |
 | 1.25       | v1.25.0+k3s1 |                     main | https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm-networks.yaml |
 | 1.24       | v1.24.3+k3s1 |                     main | https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm-networks.yaml |
 | 1.23       | v1.23.3+k3s1 |                     main | https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm-networks.yaml |
 
 ### Without Networks support
 
-| Kubernetes |          k3s | Cloud Controller Manager | Deployment File                                                                                   |
-|------------|-------------:|-------------------------:|--------------------------------------------------------------------------------------------------:|
+| Kubernetes |          k3s | Cloud Controller Manager |                                                                                   Deployment File |
+| ---------- | -----------: | -----------------------: | ------------------------------------------------------------------------------------------------: |
 | 1.25       | v1.25.0+k3s1 |                     main | https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm.yaml |
 | 1.24       | v1.24.3+k3s1 |                     main | https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm.yaml |
 | 1.23       | v1.23.6+k3s1 |                     main | https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm.yaml |
@@ -260,51 +260,63 @@ alias kgs="kubectl get services"
 ```
 
 ## Local test setup
+
 This repository provides [skaffold](https://skaffold.dev/) to easily deploy / debug this controller on demand
 
 ### Requirements
+
 1. Install [hcloud-cli](https://github.com/hetznercloud/cli)
 2. Install [k3sup](https://github.com/alexellis/k3sup)
 3. Install [cilium](https://github.com/cilium/cilium-cli)
 4. Install [docker](https://www.docker.com/)
 
 You will also need to set a `HCLOUD_TOKEN` in your shell session
+
 ### Manual Installation guide
+
 1. Create an SSH key
 
 Assuming you already have created an ssh key via `ssh-keygen`
+
 ```
-hcloud ssh-key create --name ssh-key-ccm-test --public-key-from-file ~/.ssh/id_rsa.pub 
+hcloud ssh-key create --name ssh-key-ccm-test --public-key-from-file ~/.ssh/id_rsa.pub
 ```
 
 2. Create a server
+
 ```
-hcloud server create --name ccm-test-server --image ubuntu-20.04 --ssh-key ssh-key-ccm-test --type cx11 
+hcloud server create --name ccm-test-server --image ubuntu-20.04 --ssh-key ssh-key-ccm-test --type cx11
 ```
 
 3. Setup k3s on this server
+
 ```
 k3sup install --ip $(hcloud server ip ccm-test-server) --local-path=/tmp/kubeconfig --cluster --k3s-channel=v1.23 --k3s-extra-args='--no-flannel --no-deploy=servicelb --no-deploy=traefik --disable-cloud-controller --disable-network-policy --kubelet-arg=cloud-provider=external'
 ```
+
 - The kubeconfig will be created under `/tmp/kubeconfig`
 - Kubernetes version can be configured via `--k3s-channel`
 
-4. Switch your kubeconfig to the test cluster. Very important: exporting this like 
+4. Switch your kubeconfig to the test cluster. Very important: exporting this like
+
 ```
 export KUBECONFIG=/tmp/kubeconfig
 ```
 
 5. Install cilium + test your cluster
+
 ```
 cilium install
 ```
 
 6. Add your secret to the cluster
+
 ```
 kubectl -n kube-system create secret generic hcloud --from-literal="token=$HCLOUD_TOKEN"
 ```
 
 7. Install hcloud-cloud-controller-manager + test your cluster
+
 ```
 kubectl apply -f  https://github.com/hetznercloud/hcloud-cloud-controller-manager/releases/latest/download/ccm.yaml
 kubectl config set-context default
@@ -312,15 +324,17 @@ kubectl get node -o wide
 ```
 
 8. Deploy your CSI driver
+
 ```
 SKAFFOLD_DEFAULT_REPO=naokiii skaffold dev
 ```
+
 - `docker login` required
 - Skaffold is using your own dockerhub repo to push the CSI image.
 
 On code change, skaffold will repack the image & deploy it to your test cluster again. Also, it is printing all logs from csi components.
 
-*After setting this up, only the command from step 8 is required!*
+_After setting this up, only the command from step 8 is required!_
 
 ## License
 

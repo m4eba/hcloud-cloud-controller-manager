@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/hetznercloud/hcloud-cloud-controller-manager/internal/annotation"
+	"github.com/hetznercloud/hcloud-cloud-controller-manager/internal/metrics"
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/syself/hetzner-cloud-controller-manager/internal/annotation"
-	"github.com/syself/hetzner-cloud-controller-manager/internal/metrics"
 	hrobot "github.com/syself/hrobot-go"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/klog/v2"
