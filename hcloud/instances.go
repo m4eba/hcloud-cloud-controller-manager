@@ -71,7 +71,7 @@ func (i *instances) NodeAddressesByProviderID(ctx context.Context, providerID st
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	return i.robotNodeAddresses(ctx, server), nil
+	return i.robotNodeAddresses(ctx, server)
 }
 
 func (i *instances) NodeAddresses(ctx context.Context, nodeName types.NodeName) ([]v1.NodeAddress, error) {
@@ -90,7 +90,7 @@ func (i *instances) NodeAddresses(ctx context.Context, nodeName types.NodeName) 
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	return i.robotNodeAddresses(ctx, server), nil
+	return i.robotNodeAddresses(ctx, server)
 }
 
 func (i *instances) ExternalID(ctx context.Context, nodeName types.NodeName) (string, error) {
@@ -278,7 +278,7 @@ func (i *instances) hcloudNodeAddresses(ctx context.Context, server *hcloud.Serv
 	return addresses
 }
 
-func (i *instances) robotNodeAddresses(ctx context.Context, server *models.Server) []v1.NodeAddress {
+func (i *instances) robotNodeAddresses(ctx context.Context, server *models.Server) ([]v1.NodeAddress, error) {
 	var addresses []v1.NodeAddress
 	addresses = append(
 		addresses,
@@ -303,5 +303,27 @@ func (i *instances) robotNodeAddresses(ctx context.Context, server *models.Serve
 		)
 	}
 
-	return addresses
+	mappingFile := os.Getenv(hcloudSubnetMappingFile)
+	if mappingFile != "" {
+    data, err := os.ReadFile(mappingFile)
+		if err != nil {
+			return nil, fmt.Errorf("unable to read mapping file %s, %w", mappingFile, err)
+		}
+		mappings := strings.Split(string(data),"\n")
+    for _, m := range mappings {
+			split := strings.Split(m,"=")
+			if len(split) != 2 {
+				continue;
+			}
+			if strings.TrimSpace(split[0]) == server.Name {
+				addr := v1.NodeAddress{
+					Type: v1.NodeExternalIP,
+					Address: strings.TrimSpace(split[1]),
+				}
+        addresses = append(addresses, addr)
+			}
+		}
+	}
+
+	return addresses, nil
 }

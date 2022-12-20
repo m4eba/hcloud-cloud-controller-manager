@@ -43,6 +43,10 @@ const (
 	robotUserNameENVVar = "ROBOT_USER_NAME"
 	robotPasswordENVVar = "ROBOT_PASSWORD"
 
+	// Mapping of hetzner server to subnets
+	hcloudSubnetMappingFile = "HCLOUD_SUBNET_MAPPING_FILE"
+	
+
 	// Disable the "master/server is attached to the network" check against the metadata service.
 	hcloudNetworkDisableAttachedCheckENVVar  = "HCLOUD_NETWORK_DISABLE_ATTACHED_CHECK"
 	hcloudNetworkRoutesEnabledENVVar         = "HCLOUD_NETWORK_ROUTES_ENABLED"
