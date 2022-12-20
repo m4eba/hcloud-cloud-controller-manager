@@ -55,7 +55,7 @@ spec:
         - key: 'node.kubernetes.io/not-ready'
           effect: 'NoSchedule'
       containers:
-        - image: hetznercloud/hcloud-cloud-controller-manager:v1.9.1
+        - image: ghcr.io/m4eba/hetznercloud_hcloud-cloud-controller-manager
           name: hcloud-cloud-controller-manager
           command:
             - '/bin/hcloud-cloud-controller-manager'
