@@ -17,13 +17,13 @@ builds:
     binary: hcloud-cloud-controller-manager
     ldflags:
       - '-s -w -X hcloud.providerVersion={{ if not .IsSnapshot }}v{{ end }}{{ .Version }}'
-    hooks:
-      post: './scripts/generate-deployment-yamls.sh {{ if not .IsSnapshot }}v{{ end }}{{ .Version }}'
-archives:
-  - id: deployment-yamls
-    # builds: [""]
-    name_template: '{{ .ProjectName }}_{{ .Version }}_deployment_yamls'
-    wrap_in_directory: true
+    #hooks:
+    #  post: './scripts/generate-deployment-yamls.sh {{ if not .IsSnapshot }}v{{ end }}{{ .Version }}'
+#archives:
+#  - id: deployment-yamls
+#    # builds: [""]
+#    name_template: '{{ .ProjectName }}_{{ .Version }}_deployment_yamls'
+#    wrap_in_directory: true
 
 dockers:
   - build_flag_templates: [--platform=linux/amd64]
